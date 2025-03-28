@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: ttchain-client
+
+
+ttchain:
+  rpc:
+    url: https://web3.ttchain.io/rpc
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic

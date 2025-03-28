@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: TT-Chain JSON-RPC API
-  description: API specification for TT-Chain blockchain RPC methods
+  title: TTChain JSON-RPC API
+  description: API specification for TTChain blockchain RPC methods
   version: 1.0.0
 servers:
-  - url: https://rpc.ttchain.ttweb3.com
-    description: TT-Chain RPC Endpoint
+  - url: https://web3.ttchain.io/rpc
+    description: TTChain RPC Endpoint
 paths:
   /:
     post:

@@ -1,13 +1,13 @@
 # TTChain JSONRPC Client
 
-A Spring Boot 3 client for TT-Chain blockchain JSON-RPC API implemented in Kotlin using FeignClient.
+A Spring Boot 3 client for TTChain blockchain JSON-RPC API implemented in Kotlin using FeignClient.
 
 ## Overview
 
-This project provides a client library for interacting with TT-Chain blockchain through its JSON-RPC
+This project provides a client library for interacting with TTChain blockchain through its JSON-RPC
 API. It includes:
 
-- OpenAPI Specification for the TT-Chain RPC API
+- OpenAPI Specification for the TTChain RPC API
     - [TTChain Documentation](https://ttchain-docs.readthedocs.io/en/latest/)
     - [TTChain OpenAPI Specification](./api-spec.yml)
 - Kotlin models for JSON-RPC requests and responses
@@ -24,10 +24,10 @@ API. It includes:
 
 ### Configuration
 
-Configure the TT-Chain RPC endpoint in `application.properties`:
+Configure the TTChain RPC endpoint in `application.properties`:
 
 ```properties
-ttchain.rpc.url=web3.ttchain.io
+ttchain.rpc.url=web3.ttchain.io/rpc
 ```
 
 ### Building the Project
@@ -62,7 +62,7 @@ ttchain.rpc.url=web3.ttchain.io
 
 ## JSON-RPC Methods
 
-The client supports the following TT-Chain JSON-RPC methods:
+The client supports the following TTChain JSON-RPC methods:
 
 | Method                              | Description                           |
 |-------------------------------------|---------------------------------------|

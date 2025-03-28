@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ttchain-rpc-implementation-core
+
+  config:
+    import:
+      - "feign-client.yml" # :external/classpath:feign-client.yml
