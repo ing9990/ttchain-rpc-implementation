@@ -1,0 +1,427 @@
+openapi: 3.0.3
+info:
+  title: TT-Chain JSON-RPC API
+  description: API specification for TT-Chain blockchain RPC methods
+  version: 1.0.0
+servers:
+  - url: https://rpc.ttchain.ttweb3.com
+    description: TT-Chain RPC Endpoint
+paths:
+  /:
+    post:
+      summary: JSON-RPC endpoint
+      description: Generic endpoint for all JSON-RPC calls
+      operationId: jsonRpc
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/GetBlockByNumberRequest'
+                - $ref: '#/components/schemas/GetBlockByHashRequest'
+                - $ref: '#/components/schemas/GetTransactionByHashRequest'
+                - $ref: '#/components/schemas/SendRawTransactionRequest'
+                - $ref: '#/components/schemas/CallRequest'
+                - $ref: '#/components/schemas/GetBalanceRequest'
+                - $ref: '#/components/schemas/GetCodeRequest'
+                - $ref: '#/components/schemas/GetStorageAtRequest'
+                - $ref: '#/components/schemas/GetTransactionCountRequest'
+                - $ref: '#/components/schemas/GetBlockTransactionCountByHashRequest'
+                - $ref: '#/components/schemas/GetBlockTransactionCountByNumberRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/GetBlockResponse'
+                  - $ref: '#/components/schemas/GetTransactionResponse'
+                  - $ref: '#/components/schemas/SendRawTransactionResponse'
+                  - $ref: '#/components/schemas/CallResponse'
+                  - $ref: '#/components/schemas/GetBalanceResponse'
+                  - $ref: '#/components/schemas/GetCodeResponse'
+                  - $ref: '#/components/schemas/GetStorageAtResponse'
+                  - $ref: '#/components/schemas/GetTransactionCountResponse'
+                  - $ref: '#/components/schemas/GetBlockTransactionCountResponse'
+                  - $ref: '#/components/schemas/JsonRpcErrorResponse'
+components:
+  schemas:
+    JsonRpcRequest:
+      type: object
+      required:
+        - jsonrpc
+        - method
+        - id
+      properties:
+        jsonrpc:
+          type: string
+          default: '2.0'
+          description: JSON-RPC version
+        method:
+          type: string
+          description: Method name
+        params:
+          type: array
+          description: Method parameters
+          items:
+            type: object
+        id:
+          type: integer
+          description: Request identifier
+
+    JsonRpcResponse:
+      type: object
+      required:
+        - jsonrpc
+        - id
+      properties:
+        jsonrpc:
+          type: string
+          default: '2.0'
+          description: JSON-RPC version
+        id:
+          type: integer
+          description: Request identifier matching the request
+        result:
+          type: object
+          description: Result object for successful requests
+
+    JsonRpcErrorResponse:
+      type: object
+      required:
+        - jsonrpc
+        - id
+        - error
+      properties:
+        jsonrpc:
+          type: string
+          default: '2.0'
+          description: JSON-RPC version
+        id:
+          type: integer
+          description: Request identifier matching the request
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: integer
+              description: Error code
+            message:
+              type: string
+              description: Error message
+
+    # Request schemas
+    GetBlockByNumberRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_getBlockByNumber ]
+            params:
+              type: array
+              items:
+                oneOf:
+                  - type: string
+                    description: Block number in hex or "latest", "earliest", "pending"
+                  - type: boolean
+                    description: Include full transaction objects
+
+    GetBlockByHashRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_getBlockByHash ]
+            params:
+              type: array
+              items:
+                oneOf:
+                  - type: string
+                    description: Block hash
+                  - type: boolean
+                    description: Include full transaction objects
+
+    GetTransactionByHashRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_getTransactionByHash ]
+            params:
+              type: array
+              items:
+                type: string
+                description: Transaction hash
+
+    SendRawTransactionRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_sendRawTransaction ]
+            params:
+              type: array
+              items:
+                type: string
+                description: Signed transaction data
+
+    CallRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_call ]
+            params:
+              type: array
+              items:
+                oneOf:
+                  - type: object
+                    properties:
+                      from:
+                        type: string
+                        description: Address transaction is sent from
+                      to:
+                        type: string
+                        description: Address transaction is directed to
+                      data:
+                        type: string
+                        description: Hash of the method signature and encoded parameters
+                  - type: string
+                    description: Block number or block option
+
+    GetBalanceRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_getBalance ]
+            params:
+              type: array
+              items:
+                oneOf:
+                  - type: string
+                    description: Address to check balance
+                  - type: string
+                    description: Block number or block option
+
+    GetCodeRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_getCode ]
+            params:
+              type: array
+              items:
+                oneOf:
+                  - type: string
+                    description: Address of the contract
+                  - type: string
+                    description: Block number or block option
+
+    GetStorageAtRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_getStorageAt ]
+            params:
+              type: array
+              items:
+                oneOf:
+                  - type: string
+                    description: Address of the storage
+                  - type: string
+                    description: Position in the storage
+                  - type: string
+                    description: Block number or block option
+
+    GetTransactionCountRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_getTransactionCount ]
+            params:
+              type: array
+              items:
+                oneOf:
+                  - type: string
+                    description: Address
+                  - type: string
+                    description: Block number or block option
+
+    GetBlockTransactionCountByHashRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_getBlockTransactionCountByHash ]
+            params:
+              type: array
+              items:
+                type: string
+                description: Block hash
+
+    GetBlockTransactionCountByNumberRequest:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcRequest'
+        - type: object
+          properties:
+            method:
+              type: string
+              enum: [ tt_getBlockTransactionCountByNumber ]
+            params:
+              type: array
+              items:
+                type: string
+                description: Block number or block option
+
+    # Response schemas
+    GetBlockResponse:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcResponse'
+        - type: object
+          properties:
+            result:
+              type: object
+              properties:
+                number:
+                  type: string
+                  description: Block number in hex
+                hash:
+                  type: string
+                  description: Block hash
+                parentHash:
+                  type: string
+                  description: Parent block hash
+                timestamp:
+                  type: string
+                  description: Block timestamp in hex
+                transactions:
+                  type: array
+                  description: List of transactions
+                  items:
+                    oneOf:
+                      - type: string
+                        description: Transaction hash (when full transactions not requested)
+                      - type: object
+                        description: Transaction object (when full transactions requested)
+
+    GetTransactionResponse:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcResponse'
+        - type: object
+          properties:
+            result:
+              type: object
+              properties:
+                hash:
+                  type: string
+                  description: Transaction hash
+                blockHash:
+                  type: string
+                  description: Block hash
+                blockNumber:
+                  type: string
+                  description: Block number in hex
+                from:
+                  type: string
+                  description: Sender address
+                to:
+                  type: string
+                  description: Recipient address
+                value:
+                  type: string
+                  description: Value transferred in hex
+                input:
+                  type: string
+                  description: Transaction input data
+
+    SendRawTransactionResponse:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcResponse'
+        - type: object
+          properties:
+            result:
+              type: string
+              description: Transaction hash
+
+    CallResponse:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcResponse'
+        - type: object
+          properties:
+            result:
+              type: string
+              description: Return value from contract execution
+
+    GetBalanceResponse:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcResponse'
+        - type: object
+          properties:
+            result:
+              type: string
+              description: Account balance in hex
+
+    GetCodeResponse:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcResponse'
+        - type: object
+          properties:
+            result:
+              type: string
+              description: Contract code
+
+    GetStorageAtResponse:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcResponse'
+        - type: object
+          properties:
+            result:
+              type: string
+              description: Value at the specified storage position
+
+    GetTransactionCountResponse:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcResponse'
+        - type: object
+          properties:
+            result:
+              type: string
+              description: Number of transactions in hex
+
+    GetBlockTransactionCountResponse:
+      allOf:
+        - $ref: '#/components/schemas/JsonRpcResponse'
+        - type: object
+          properties:
+            result:
+              type: string
+              description: Number of transactions in the block in hex
